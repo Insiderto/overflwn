@@ -1,0 +1,17 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "outDir": "dist",
+    "declaration": true,
+    "declarationDir": "dist",
+    "sourceMap": true,
+    "noEmit": false,
+    "jsx": "react-jsx",
+    "skipLibCheck": true,
+    "target": "ES2020",
+    "module": "ESNext",
+    "moduleResolution": "bundler"
+  },
+  "include": ["lib"],
+  "exclude": ["node_modules", "dist"]
+}

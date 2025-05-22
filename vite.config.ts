@@ -1,27 +1,31 @@
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import tailwindcss from "@tailwindcss/vite";
-import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
-import type { LibraryFormats } from "vite";
+import { defineConfig } from "vite";
+import dts from "vite-plugin-dts";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
 // Export the main config for the library
 export default defineConfig({
-	plugins: [react(), tailwindcss()],
+	plugins: [react(), tailwindcss(), dts({ 
+		include: ["lib"],
+		outDir: "dist",
+		tsconfigPath: "./tsconfig.lib.json"
+	})],
 	resolve: {
 		alias: {
 			"@": resolve(__dirname, "./src"),
 		},
 	},
 	build: {
+		copyPublicDir: false,
 		lib: {
 			// Main entry point for the entire library
 			entry: resolve(__dirname, "lib/main.ts"),
 			name: "overflwn",
-			fileName: (format) => `overflwn.${format}.js`,
-			formats: ["es", "umd"] as LibraryFormats[],
+			formats: ["es", "umd"],
 		},
 		rollupOptions: {
 			external: ["react", "react-dom"],
