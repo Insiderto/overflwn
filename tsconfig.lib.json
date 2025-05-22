@@ -7,10 +7,12 @@
     "sourceMap": true,
     "noEmit": false,
     "jsx": "react-jsx",
+    "jsxImportSource": "react",
     "skipLibCheck": true,
     "target": "ES2020",
     "module": "ESNext",
-    "moduleResolution": "bundler"
+    "moduleResolution": "bundler",
+    "isolatedModules": true
   },
   "include": ["lib"],
   "exclude": ["node_modules", "dist"]

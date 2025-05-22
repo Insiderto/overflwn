@@ -9,7 +9,15 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 
 // Export the main config for the library
 export default defineConfig({
-	plugins: [react(), tailwindcss(), dts({ 
+	plugins: [react({
+		jsxRuntime: "automatic",
+		jsxImportSource: "react",
+		babel: {
+			plugins: [
+				["@babel/plugin-transform-react-jsx", { runtime: "automatic" }]
+			]
+		}
+	}), tailwindcss(), dts({ 
 		include: ["lib"],
 		outDir: "dist",
 		tsconfigPath: "./tsconfig.lib.json"
@@ -28,12 +36,13 @@ export default defineConfig({
 			formats: ["es", "umd"],
 		},
 		rollupOptions: {
-			external: ["react", "react-dom"],
+			external: ["react", "react-dom", "react/jsx-runtime"],
 			output: {
 				globals: {
 					react: "React",
 					"react-dom": "ReactDOM",
-				},
+					"react/jsx-runtime": "jsxRuntime"
+				}
 			},
 		},
 		// Generate TypeScript declaration files
