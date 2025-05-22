@@ -1,5 +1,6 @@
 {
 	"name": "overflwn",
+	"description": "A lightweight React library featuring the OverflowContainer component that intelligently handles overflow content with a customizable 'more' indicator.",
 	"private": false,
 	"version": "0.1.0",
 	"type": "module",
