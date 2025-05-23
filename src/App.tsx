@@ -338,14 +338,17 @@ function App() {
 			</div>
 
 			<footer className="w-full px-12 text-center text-xs text-muted-foreground mt-8">
-				OverflowContainer &copy; new Date().getFullYear()by Rafael Kamaltinov —"
-				"
+				overflwn &copy; {new Date().getFullYear()} by Rafael Kamaltinov —{" "}
 				<a href="https://github.com/Insiderto/overflwn" className="underline">
 					GitHub
 				</a>
+				{" — "}
+				<a href="https://github.com/Insiderto/overflwn/blob/master/LICENSE" className="underline">
+					MIT License
+				</a>
 			</footer>
-		</div>
-	);
-}
+			</div>
+		);
+	}
 
 export default App;
