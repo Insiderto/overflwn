@@ -108,12 +108,12 @@ function App() {
 			{/* Header */}
 			<div className="w-full max-w-5xl flex flex-col gap-2 items-center">
 				<h1 className="text-3xl md:text-4xl font-bold mb-2 tracking-tight">
-					OverflowContainer <span className="text-primary">Demo</span>
+					overflwn <span className="text-primary">Demo</span>
 				</h1>
 				<p className="text-base md:text-lg text-muted-foreground text-center max-w-xl">
-					<b>OverflowContainer</b> automatically fits as many items as possible
-					and hides the rest behind a customizable indicator. Perfect for tags,
-					menus, avatars, and more. Fully compatible with dark mode and custom
+					<b>overflwn</b> automatically fits as many items as possible and hides
+					the rest behind a customizable indicator. Perfect for tags, menus,
+					avatars, and more. Fully compatible with dark mode and custom
 					rendering.
 				</p>
 			</div>
@@ -293,7 +293,7 @@ function App() {
 
 			<footer className="w-full max-w-5xl text-center text-xs text-muted-foreground mt-8">
 				OverflowContainer &copy; {new Date().getFullYear()} —{" "}
-				<a href="#" className="underline">
+				<a href="https://github.com/Insiderto/overflwn" className="underline">
 					GitHub
 				</a>
 			</footer>
