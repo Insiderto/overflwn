@@ -117,23 +117,28 @@ function App() {
 				<p className="text-base md:text-lg text-muted-foreground text-left max-w-xl">
 					<b>overflwn</b> automatically fits as many items as possible and hides
 					the rest behind a customizable indicator. Perfect for tags, menus,
-					avatars, and more. Fully compatible with dark mode and custom
-					rendering.
+					avatars, and more.
 				</p>
-				
+
 				{/* Advantages */}
 				<div className="flex flex-col gap-2 mt-2">
 					<div className="flex items-center gap-2">
 						<Badge variant="secondary">2.66 kB │ gzip: 0.96 kB</Badge>
-						<span className="text-sm text-muted-foreground">Tiny bundle size</span>
+						<span className="text-sm text-muted-foreground">
+							Tiny bundle size
+						</span>
 					</div>
 					<div className="flex items-center gap-2">
 						<Badge variant="secondary">Pure React</Badge>
-						<span className="text-sm text-muted-foreground">No dependencies, just clean React code</span>
+						<span className="text-sm text-muted-foreground">
+							No dependencies, just clean React code
+						</span>
 					</div>
 					<div className="flex items-center gap-2">
 						<Badge variant="secondary">Universal</Badge>
-						<span className="text-sm text-muted-foreground">Works with any UI library or framework</span>
+						<span className="text-sm text-muted-foreground">
+							Works with any UI library or framework
+						</span>
 					</div>
 				</div>
 			</div>
@@ -343,12 +348,15 @@ function App() {
 					GitHub
 				</a>
 				{" — "}
-				<a href="https://github.com/Insiderto/overflwn/blob/master/LICENSE" className="underline">
+				<a
+					href="https://github.com/Insiderto/overflwn/blob/master/LICENSE"
+					className="underline"
+				>
 					MIT License
 				</a>
 			</footer>
-			</div>
-		);
-	}
+		</div>
+	);
+}
 
 export default App;
