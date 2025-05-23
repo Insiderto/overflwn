@@ -246,7 +246,7 @@ function App() {
 						<div className="flex gap-2 flex-wrap flex-col">
 							<div className="flex gap-2">
 								<pre className="bg-muted rounded px-3 py-1 text-sm select-all">
-									npm install overflow-container
+									npm install overflwn
 								</pre>
 								<Button
 									size="sm"
@@ -258,7 +258,7 @@ function App() {
 							</div>
 							<div className="flex gap-2">
 								<pre className="bg-muted rounded px-3 py-1 text-sm select-all">
-									yarn add overflow-container
+									yarn add overflwn
 								</pre>
 								<Button
 									size="sm"
