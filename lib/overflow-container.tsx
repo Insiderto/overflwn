@@ -4,25 +4,54 @@ import { useEffect, useRef, useState } from "react";
 import type { ReactNode } from "react";
 
 export interface OverflowContainerProps {
-	/** Elements to display in the container */
+	/**
+	 * Elements to display in the container.
+	 * Each child will be measured and displayed if it fits within the container width.
+	 */
 	children: ReactNode[];
 	/**
-	 * Optional render function for hidden elements (e.g., a "More" button).
-	 * Receives the hidden elements as an array.
+	 * Optional render function for hidden elements (e.g., a "More" button or badge).
+	 * @param hiddenElements - Array of React nodes that didn't fit in the container
+	 * @param hiddenIndexes - Array of indexes corresponding to the hidden elements in the original children array
+	 * @returns A React node to render (e.g., a badge showing "+X more" or a dropdown)
+	 * @example
+	 * renderHiddenElements={(hidden, hiddenIndexes) => (
+	 *   <Badge>+{hidden.length} more</Badge>
+	 * )}
 	 */
-	renderHiddenElements?: (hiddenElements: ReactNode[]) => ReactNode;
-	/** Optional class name for the container */
+	renderHiddenElements?: (
+		hiddenElements: ReactNode[],
+		hiddenIndexes: number[],
+	) => ReactNode;
+	/**
+	 * Optional class name for the container.
+	 * You can use this to apply custom styles to the container element.
+	 */
 	className?: string;
-	/** Gap between elements in pixels (default: 8) */
+	/**
+	 * Gap between elements in pixels.
+	 * @default 8
+	 */
 	gap?: number;
 }
 
 /**
- * OverflowContainer displays as many children as fit in the container,
- * hiding the rest behind a customizable render function (e.g., a More button).
- * No external dependencies, pure React.
+ * OverflowContainer automatically displays as many children as fit within its width,
+ * hiding the rest behind a customizable render function (e.g., a "More" button or badge).
+ *
+ * @component
+ * @example
+ * ```tsx
+ * <OverflowContainer
+ *   renderHiddenElements={(hidden, hiddenIndexes) => (
+ *     <Badge>+{hidden.length} more</Badge>
+ *   )}
+ *   gap={10}
+ * >
+ *   {tags.map(tag => <Badge key={tag}>{tag}</Badge>)}
+ * </OverflowContainer>
+ * ```
  */
-
 export const OverflowContainer = ({
 	children,
 	renderHiddenElements,
@@ -81,6 +110,10 @@ export const OverflowContainer = ({
 
 	const visibleElements = children.slice(0, visibleCount);
 	const hiddenElements = children.slice(visibleCount);
+	const hiddenIndexes = Array.from(
+		{ length: children.length - visibleCount },
+		(_, i) => i + visibleCount,
+	);
 
 	return (
 		<div
@@ -93,7 +126,6 @@ export const OverflowContainer = ({
 				position: "relative",
 			}}
 		>
-			{/* Hidden measuring container for all items */}
 			<div
 				ref={itemsRef}
 				style={{
@@ -119,7 +151,6 @@ export const OverflowContainer = ({
 					</div>
 				))}
 			</div>
-			{/* Hidden render for measuring More button */}
 			{renderHiddenElements && (
 				<div
 					ref={moreButtonRef}
@@ -131,10 +162,9 @@ export const OverflowContainer = ({
 						height: 0,
 					}}
 				>
-					{renderHiddenElements([children[0]])}
+					{renderHiddenElements([children[0]], [0])}
 				</div>
 			)}
-			{/* Visible elements */}
 			<div
 				style={{
 					display: "flex",
@@ -155,7 +185,7 @@ export const OverflowContainer = ({
 				))}
 				{hiddenElements.length > 0 && renderHiddenElements && (
 					<div style={{ flexShrink: 0 }}>
-						{renderHiddenElements(hiddenElements)}
+						{renderHiddenElements(hiddenElements, hiddenIndexes)}
 					</div>
 				)}
 			</div>
