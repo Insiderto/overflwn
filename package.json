@@ -9,17 +9,13 @@
 		"type": "git",
 		"url": "git+https://github.com/Insiderto/overflwn.git"
 	},
-	"version": "0.1.9",
+	"version": "0.1.10",
 	"type": "module",
 	"main": "dist/overflwn.js",
 	"module": "dist/overflwn.js",
 	"types": "dist/main.d.ts",
-	"files": [
-		"dist"
-	],
-	"sideEffects": [
-		"**/*.css"
-	],
+	"files": ["dist"],
+	"sideEffects": ["**/*.css"],
 	"scripts": {
 		"dev": "vite",
 		"build": "tsc --p ./tsconfig.lib.json && vite build",
