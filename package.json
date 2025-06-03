@@ -9,8 +9,14 @@
 		"type": "git",
 		"url": "git+https://github.com/Insiderto/overflwn.git"
 	},
-	"keywords": ["react", "overflow", "container", "overflow-container", "overflow-container-react"],
-	"version": "0.1.12",
+	"keywords": [
+		"react",
+		"overflow",
+		"container",
+		"overflow-container",
+		"overflow-container-react"
+	],
+	"version": "0.1.13",
 	"type": "module",
 	"main": "dist/overflwn.js",
 	"module": "dist/overflwn.js",
