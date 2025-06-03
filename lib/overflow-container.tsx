@@ -37,7 +37,7 @@ function useDebounce<T extends (...args: unknown[]) => unknown>(
 export interface OverflowContainerProps {
 	/**
 	 * Elements to display in the container.
-	 * Each child will be measured and displayed if it fits within the container width (horizontal) or height (vertical).
+	 * Each child will be measured and displayed if it fits within the container width.
 	 */
 	children: ReactNode[];
 	/**
@@ -164,11 +164,9 @@ export const OverflowContainer = ({
 			className={className}
 			style={{
 				display: "flex",
-				flexDirection: orientation === "horizontal" ? "row" : "column",
-				alignItems: orientation === "horizontal" ? "center" : "stretch",
+				flexDirection: "row",
 				overflow: "hidden",
 				position: "relative",
-				...(orientation === "vertical" ? { height: "100%" } : {}),
 				// Hide content until calculation is complete
 				visibility: isCalculated ? "visible" : "hidden",
 			}}
@@ -179,14 +177,12 @@ export const OverflowContainer = ({
 					position: "absolute",
 					visibility: "hidden",
 					display: "flex",
-					flexDirection: orientation === "horizontal" ? "row" : "column",
-					alignItems: orientation === "horizontal" ? "center" : "stretch",
+					flexDirection: "row",
 					gap: `${gap}px`,
-					whiteSpace: orientation === "horizontal" ? "nowrap" : "normal",
+					whiteSpace: "nowrap",
 					pointerEvents: "none",
-					...(orientation === "horizontal"
-						? { height: 0, width: "max-content" }
-						: { width: "100%", height: "max-content" }),
+					height: 0,
+					width: "max-content",
 				}}
 			>
 				{Children.map(childrenArray, (child) => (
@@ -201,9 +197,8 @@ export const OverflowContainer = ({
 						visibility: "hidden",
 						flexShrink: 0,
 						pointerEvents: "none",
-						...(orientation === "horizontal"
-							? { height: 0, width: "max-content" }
-							: { width: "100%", height: "max-content" }),
+						height: 0,
+						width: "max-content",
 					}}
 				>
 					{renderHiddenElements([childrenArray[0]], [0])}
@@ -212,8 +207,7 @@ export const OverflowContainer = ({
 			<div
 				style={{
 					display: "flex",
-					flexDirection: orientation === "horizontal" ? "row" : "column",
-					alignItems: orientation === "horizontal" ? "center" : "stretch",
+					flexDirection: "row",
 					gap: `${gap}px`,
 					width: "100%",
 				}}
