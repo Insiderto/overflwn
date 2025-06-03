@@ -198,7 +198,7 @@ function App() {
 												</TooltipTrigger>
 												<TooltipContent className="flex flex-col px-0">
 													{hiddenIndexes.map((e) => (
-														<Badge key={tags[e]}>{tags[e]}</Badge>
+														<Badge key={`tooltip-${tags[e]}`}>{tags[e]}</Badge>
 													))}
 												</TooltipContent>
 											</Tooltip>
@@ -206,8 +206,8 @@ function App() {
 									)}
 									gap={10}
 								>
-									{tags.map((tag) => (
-										<Badge key={tag}>{tag}</Badge>
+									{tags.map((tag, index) => (
+										<Badge key={`tag-${index}-${tag}`}>{tag}</Badge>
 									))}
 								</OverflowContainer>
 							</div>
@@ -221,8 +221,8 @@ function App() {
 									renderHiddenElements={(hidden) => (
 										<Popover>
 											<PopoverTrigger>
-												<Button variant="outline">
-													Click to see {hidden.length} more{" "}
+												<Button variant="outline" asChild>
+													<span>Click to see {hidden.length} more</span>
 												</Button>
 											</PopoverTrigger>
 											<PopoverContent>
@@ -232,8 +232,8 @@ function App() {
 									)}
 									gap={10}
 								>
-									{tags.map((tag) => (
-										<Button key={tag}>{tag}</Button>
+									{tags.map((tag, index) => (
+										<Button key={`btn-${index}-${tag}`}>{tag}</Button>
 									))}
 								</OverflowContainer>
 							</div>
@@ -295,8 +295,8 @@ function App() {
 									>
 										{tokens.map((line, i) => (
 											<div
-												// biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
-												key={i}
+												// biome-ignore lint/suspicious/noArrayIndexKey: This is a static code display
+												key={`line-${i}`}
 												{...getLineProps({ line })}
 												style={{ display: "flex" }}
 											>
@@ -312,9 +312,9 @@ function App() {
 													{i + 1}
 												</span>
 												<span>
-													{line.map((token) => (
+													{line.map((token, j) => (
 														<span
-															key={token.content}
+															key={`token-${i}-${j}-${token.content}`}
 															{...getTokenProps({ token })}
 														/>
 													))}

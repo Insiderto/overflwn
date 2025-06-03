@@ -1,12 +1,43 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import {
+	Children,
+	useCallback,
+	useEffect,
+	useLayoutEffect,
+	useRef,
+	useState,
+} from "react";
 import type { ReactNode } from "react";
+
+// Custom hook for debounced function
+function useDebounce<T extends (...args: unknown[]) => unknown>(
+	callback: T,
+	delay: number,
+): (...args: Parameters<T>) => void {
+	const callbackRef = useRef<T>(callback);
+
+	// Update the callback ref when callback changes
+	useEffect(() => {
+		callbackRef.current = callback;
+	}, [callback]);
+
+	return useCallback(
+		(...args: Parameters<T>) => {
+			const timeoutId = setTimeout(() => {
+				callbackRef.current(...args);
+			}, delay);
+
+			return () => clearTimeout(timeoutId);
+		},
+		[delay],
+	);
+}
 
 export interface OverflowContainerProps {
 	/**
 	 * Elements to display in the container.
-	 * Each child will be measured and displayed if it fits within the container width.
+	 * Each child will be measured and displayed if it fits within the container width (horizontal) or height (vertical).
 	 */
 	children: ReactNode[];
 	/**
@@ -57,61 +88,74 @@ export const OverflowContainer = ({
 	renderHiddenElements,
 	className = "",
 	gap = 8,
+	orientation = "horizontal",
 }: OverflowContainerProps) => {
 	const containerRef = useRef<HTMLDivElement>(null);
 	const itemsRef = useRef<HTMLDivElement>(null);
 	const moreButtonRef = useRef<HTMLDivElement>(null);
 	const [visibleCount, setVisibleCount] = useState(children.length);
+	const [isCalculated, setIsCalculated] = useState(false);
 
-	useEffect(() => {
-		const calculateVisibleItems = () => {
-			if (!containerRef.current || !itemsRef.current) return;
-			const containerWidth = containerRef.current.offsetWidth;
-			const items = itemsRef.current.children;
-			if (containerWidth === 0 || items.length === 0) return;
+	const childrenArray = Children.toArray(children);
 
-			// Get width of the hidden elements renderer (e.g., More button)
-			let moreButtonWidth = 0;
-			if (moreButtonRef.current && renderHiddenElements) {
-				moreButtonWidth = moreButtonRef.current.offsetWidth;
+	const calculateVisibleItems = useCallback(() => {
+		if (!containerRef.current || !itemsRef.current) return;
+		const containerWidth = containerRef.current.offsetWidth;
+		const items = itemsRef.current.children;
+		if (containerWidth === 0 || items.length === 0) return;
+
+		let moreButtonWidth = 0;
+		if (moreButtonRef.current && renderHiddenElements) {
+			moreButtonWidth = moreButtonRef.current.offsetWidth;
+		}
+		let totalWidth = 0;
+		let count = 0;
+		for (let i = 0; i < items.length; i++) {
+			const item = items[i] as HTMLElement;
+			const itemWidth = item.offsetWidth;
+			const gapWidth = i > 0 ? gap : 0;
+			const newTotalWidth = totalWidth + itemWidth + gapWidth;
+			const remainingItems = children.length - (i + 1);
+			const needsMoreButton = remainingItems > 0 && renderHiddenElements;
+			const moreButtonSpace = needsMoreButton ? moreButtonWidth + gap : 0;
+			if (newTotalWidth + moreButtonSpace <= containerWidth) {
+				totalWidth = newTotalWidth;
+				count = i + 1;
+			} else {
+				break;
 			}
-			let totalWidth = 0;
-			let count = 0;
-			for (let i = 0; i < items.length; i++) {
-				const item = items[i] as HTMLElement;
-				const itemWidth = item.offsetWidth;
-				const gapWidth = i > 0 ? gap : 0;
-				const newTotalWidth = totalWidth + itemWidth + gapWidth;
-				const remainingItems = children.length - (i + 1);
-				const needsMoreButton = remainingItems > 0 && renderHiddenElements;
-				const moreButtonSpace = needsMoreButton ? moreButtonWidth + gap : 0;
-				if (newTotalWidth + moreButtonSpace <= containerWidth) {
-					totalWidth = newTotalWidth;
-					count = i + 1;
-				} else {
-					break;
-				}
-			}
-			setVisibleCount(count);
-		};
+		}
+		setVisibleCount(count);
+		setIsCalculated(true);
+	}, [gap, renderHiddenElements, children.length]);
+
+	// Create debounced version of the calculation function
+	const debouncedCalculate = useDebounce(calculateVisibleItems, 100);
+
+	useLayoutEffect(() => {
 		const resizeObserver = new ResizeObserver(() => {
-			calculateVisibleItems();
+			debouncedCalculate();
 		});
+
 		if (containerRef.current) {
 			resizeObserver.observe(containerRef.current);
 		}
-		// Initial calculation
-		const timer = setTimeout(calculateVisibleItems, 10);
+
+		// Initial calculation with a small delay
+		const timer = setTimeout(() => {
+			calculateVisibleItems();
+		}, 10);
+
 		return () => {
 			resizeObserver.disconnect();
 			clearTimeout(timer);
 		};
-	}, [children, gap, renderHiddenElements]);
+	}, [calculateVisibleItems, debouncedCalculate]);
 
-	const visibleElements = children.slice(0, visibleCount);
-	const hiddenElements = children.slice(visibleCount);
+	const visibleElements = childrenArray.slice(0, visibleCount);
+	const hiddenElements = childrenArray.slice(visibleCount);
 	const hiddenIndexes = Array.from(
-		{ length: children.length - visibleCount },
+		{ length: childrenArray.length - visibleCount },
 		(_, i) => i + visibleCount,
 	);
 
@@ -121,9 +165,13 @@ export const OverflowContainer = ({
 			className={className}
 			style={{
 				display: "flex",
-				alignItems: "center",
+				flexDirection: orientation === "horizontal" ? "row" : "column",
+				alignItems: orientation === "horizontal" ? "center" : "stretch",
 				overflow: "hidden",
 				position: "relative",
+				...(orientation === "vertical" ? { height: "100%" } : {}),
+				// Hide content until calculation is complete
+				visibility: isCalculated ? "visible" : "hidden",
 			}}
 		>
 			<div
@@ -132,23 +180,18 @@ export const OverflowContainer = ({
 					position: "absolute",
 					visibility: "hidden",
 					display: "flex",
-					alignItems: "center",
+					flexDirection: orientation === "horizontal" ? "row" : "column",
+					alignItems: orientation === "horizontal" ? "center" : "stretch",
 					gap: `${gap}px`,
-					whiteSpace: "nowrap",
+					whiteSpace: orientation === "horizontal" ? "nowrap" : "normal",
 					pointerEvents: "none",
-					height: 0,
+					...(orientation === "horizontal"
+						? { height: 0, width: "max-content" }
+						: { width: "100%", height: "max-content" }),
 				}}
 			>
-				{children.map((child, index) => (
-					<div
-						key={`measure-${
-							// biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
-							index
-						}`}
-						style={{ flexShrink: 0 }}
-					>
-						{child}
-					</div>
+				{Children.map(childrenArray, (child) => (
+					<div style={{ flexShrink: 0 }}>{child}</div>
 				))}
 			</div>
 			{renderHiddenElements && (
@@ -159,29 +202,25 @@ export const OverflowContainer = ({
 						visibility: "hidden",
 						flexShrink: 0,
 						pointerEvents: "none",
-						height: 0,
+						...(orientation === "horizontal"
+							? { height: 0, width: "max-content" }
+							: { width: "100%", height: "max-content" }),
 					}}
 				>
-					{renderHiddenElements([children[0]], [0])}
+					{renderHiddenElements([childrenArray[0]], [0])}
 				</div>
 			)}
 			<div
 				style={{
 					display: "flex",
-					alignItems: "center",
+					flexDirection: orientation === "horizontal" ? "row" : "column",
+					alignItems: orientation === "horizontal" ? "center" : "stretch",
 					gap: `${gap}px`,
+					width: "100%",
 				}}
 			>
-				{visibleElements.map((child, index) => (
-					<div
-						key={`visible-${
-							// biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
-							index
-						}`}
-						style={{ flexShrink: 0 }}
-					>
-						{child}
-					</div>
+				{Children.map(visibleElements, (child) => (
+					<div style={{ flexShrink: 0 }}>{child}</div>
 				))}
 				{hiddenElements.length > 0 && renderHiddenElements && (
 					<div style={{ flexShrink: 0 }}>
