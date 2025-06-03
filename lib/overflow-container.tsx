@@ -88,7 +88,6 @@ export const OverflowContainer = ({
 	renderHiddenElements,
 	className = "",
 	gap = 8,
-	orientation = "horizontal",
 }: OverflowContainerProps) => {
 	const containerRef = useRef<HTMLDivElement>(null);
 	const itemsRef = useRef<HTMLDivElement>(null);
