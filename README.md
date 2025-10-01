@@ -1,5 +1,8 @@
 # Overflwn - React Overflow Container
 
+[![npm version](https://badge.fury.io/js/overflwn.svg)](https://www.npmjs.com/package/overflwn)
+[![npm downloads](https://img.shields.io/npm/dm/overflwn.svg)](https://www.npmjs.com/package/overflwn)
+[![license](https://img.shields.io/npm/l/overflwn.svg)](https://github.com/Insiderto/overflwn/blob/master/LICENSE)
 
 A lightweight React library featuring the `OverflowContainer` component that intelligently handles overflow content with a customizable "more" indicator.
 
