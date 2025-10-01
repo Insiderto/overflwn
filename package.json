@@ -16,7 +16,7 @@
 		"overflow-container",
 		"overflow-container-react"
 	],
-	"version": "0.1.13",
+	"version": "0.2.0",
 	"type": "module",
 	"main": "dist/overflwn.js",
 	"module": "dist/overflwn.js",
